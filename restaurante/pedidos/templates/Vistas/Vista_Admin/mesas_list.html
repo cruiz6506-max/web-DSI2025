@@ -1,0 +1,160 @@
+{% extends 'Vistas/Vista_Admin/base_admin.html' %}
+
+{% block title %}Mesas{% endblock %}
+
+{% block content %}
+<div class="content-header">
+    <h2>Mesas</h2>
+    <a href="{% url 'mesas_nuevo' %}" class="btn-primary"> Nueva Mesa</a>
+</div>
+
+<!-- Filtros -->
+<div class="tabs-container">
+    <button class="tab-btn active" data-estado="todos">Todas</button>
+    <button class="tab-btn" data-estado="disponible">Disponibles</button>
+    <button class="tab-btn" data-estado="ocupada">Ocupadas</button>
+    <button class="tab-btn" data-estado="reservada">Reservadas</button>
+</div>
+
+<div class="cards-container">
+    {% for mesa in mesas %}
+    <div class="mesa-card" data-estado="{{ mesa.estado }}">
+        <h3>Mesa {{ mesa.numero }}</h3>
+        <br>
+        <p>Capacidad: {{ mesa.capacidad }} personas</p>
+        <br>
+        <span class="estado {{ mesa.estado }}">{{ mesa.estado }}</span>
+        <br>
+        <p>  </p>
+        <div class="action-buttons">
+            <br>
+            <a href="{% url 'mesas_editar' mesa.id %}" class="btn-edit">Modificar</a>
+            <a href="{% url 'mesas_eliminar' mesa.id %}" class="btn-delete">Eliminar</a>
+        </div>
+    </div>
+    {% empty %}
+    <p>No hay mesas registradas.</p>
+    {% endfor %}
+</div>
+
+<style>
+.cards-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
+}
+
+.mesa-card {
+    background: var(--white);
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 4px 8px var(--shadow);
+}
+
+.estado {
+    display: inline-block;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+.estado.disponible { background: #c8f7c5; }
+.estado.ocupada { background: #f7c5c5; }
+.estado.reservada { background: #f7e6c5; }
+
+
+.tabs-container {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+}
+
+.tab-btn {
+    background-color: var(--white);
+    border: 2px solid var(--border-color);
+    padding: 10px 22px;
+    border-radius: 30px;
+    cursor: pointer;
+    font-weight: 600;
+    color: black;
+    transition: all 0.25s ease;
+}
+
+.tab-btn:hover {
+    background-color: var(--primary-yellow);
+    color: white;
+    border-color: var(--primary-yellow);
+}
+
+.tab-btn.active {
+    background-color: var(--primary-yellow);
+    color: white;
+    border-color: var(--primary-yellow);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+.action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 15px;
+    padding-bottom: 15px;
+}
+
+.btn-edit,
+.btn-delete {
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.25s ease;
+}
+
+/* Editar */
+.btn-edit {
+    background-color: #3498db;
+    color: white;
+}
+
+.btn-edit:hover {
+    background-color: #217dbb;
+    transform: scale(1.05);
+}
+
+.btn-delete {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.btn-delete:hover {
+    background-color: #c0392b;
+    transform: scale(1.05);
+}
+
+</style>
+
+<script>
+const tabs = document.querySelectorAll('.tab-btn');
+const cards = document.querySelectorAll('.mesa-card');
+
+tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+        tabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+
+        const estado = tab.dataset.estado;
+
+        cards.forEach(card => {
+            card.style.display =
+                estado === 'todos' || card.dataset.estado === estado
+                ? 'block'
+                : 'none';
+        });
+    });
+});
+</script>
+{% endblock %}

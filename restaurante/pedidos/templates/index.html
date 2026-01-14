@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gestión de Pedidos</title>
+
+     <link rel="icon" href="{% static 'img/logoOficial.png' %}" type="image/x-icon" />
+    <link rel="stylesheet" href="{% static 'css/index.css' %}" />
+  </head>
+
+  <body>
+    <!-- Header -->
+    <header>
+      <div class="header">
+        <h1 class="title">Gestión de Pedidos</h1>
+        <nav class="nav_container">
+          <ul>
+            <li class="nav_list"><a href="{% url 'inicio' %}">Inicio</a></li>
+            <li class="nav_list"><a href="{% url 'login' %}">Iniciar Sesión</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <!-- Banner / Hero -->
+    <section class="banner-container">
+      <div class="banner_content">
+        <h1 class="title-banner">Sistema de Gestión de Pedidos</h1>
+        <p class="banner-subtitle">
+          Administra órdenes, clientes y entregas de forma rápida y eficiente.
+        </p>
+        <a href="{% url 'login' %}" class="cta">Iniciar Sesión</a>
+      </div>
+    </section>
+
+  </body>
+</html>

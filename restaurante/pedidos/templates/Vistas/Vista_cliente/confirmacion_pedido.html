@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pedido Confirmado - Burger LIK</title>
+    <link rel="icon" href="{% static 'img/logoOficial.png' %}" type="image/x-icon" />
+    <link rel="stylesheet" href="{% static 'css/menu.css' %}" />
+</head>
+<body>
+    <header>
+        <div class="header">
+            <h1 class="title">Burger LIK</h1>
+        </div>
+    </header>
+
+    <main style="min-height: 80vh; display: flex; justify-content: center; align-items: center; padding: 40px 20px;">
+        <div class="confirmation-container">
+            <!-- Icono de éxito -->
+            <div class="success-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+            </div>
+
+            <h1 class="success-title">¡Pedido Confirmado Exitosamente! 🎉</h1>
+            <p class="success-subtitle">Tu pedido ha sido registrado y está siendo preparado</p>
+
+            <!-- Información del Pedido -->
+            <div class="confirmation-card">
+                <div class="card-header">
+                    <h2> Detalles del Pedido</h2>
+                </div>
+
+                <div class="card-body">
+                    <div class="info-row">
+                        <span class="label">Número de Pedido:</span>
+                        <span class="value"><strong>#{{ pedido.id }}</strong></span>
+                    </div>
+
+                    <div class="info-row">
+                        <span class="label">Fecha y Hora:</span>
+                        <span class="value">{{ pedido.fecha|date:"d/m/Y H:i" }}</span>
+                    </div>
+
+                    <div class="info-row">
+                        <span class="label">Estado:</span>
+                        <span class="badge badge-preparacion">{{ pedido.estado|title }}</span>
+                    </div>
+
+                    <div class="info-row">
+                        <span class="label">Tipo de Entrega:</span>
+                        <span class="value">{{ pedido.get_tipo_pedido_display }}</span>
+                    </div>
+
+                    {% if pago.direccion_entrega %}
+                    <div class="info-row">
+                        <span class="label">Dirección:</span>
+                        <span class="value">{{ pago.direccion_entrega }}</span>
+                    </div>
+                    {% endif %}
+
+                    <div class="info-row">
+                        <span class="label">Teléfono:</span>
+                        <span class="value">{{ pago.telefono_contacto }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Productos del Pedido -->
+            <div class="confirmation-card">
+                <div class="card-header">
+                    <h2> Productos</h2>
+                </div>
+
+                <div class="card-body">
+                    <div class="products-list">
+                        {% for detalle in detalles %}
+                        <div class="product-item">
+                            <div class="product-info">
+                                <span class="product-name">{{ detalle.producto.nombre }}</span>
+                                <span class="product-quantity">x{{ detalle.cantidad }}</span>
+                            </div>
+                            <span class="product-price">${{ detalle.subtotal }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="total-section">
+                        <span class="total-label">TOTAL PAGADO:</span>
+                        <span class="total-value">${{ total }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Información de Pago -->
+            <div class="confirmation-card">
+                <div class="card-header">
+                    <h2> Información de Pago</h2>
+                </div>
+
+                <div class="card-body">
+                    <div class="info-row">
+                        <span class="label">Método de Pago:</span>
+                        <span class="value">
+                            {% if pago.metodo == 'efectivo' %}
+                                 Efectivo
+                            {% elif pago.metodo == 'tarjeta' %}
+                                 Tarjeta
+                            {% elif pago.metodo == 'transferencia' %}
+                                 Transferencia
+                            {% endif %}
+                        </span>
+                    </div>
+
+                    <div class="info-row">
+                        <span class="label">Estado del Pago:</span>
+                        <span class="badge badge-completado">{{ pago.estado|title }}</span>
+                    </div>
+
+                    <div class="info-row">
+                        <span class="label">Fecha de Pago:</span>
+                        <span class="value">{{ pago.fecha_pago|date:"d/m/Y H:i" }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mensaje Informativo -->
+            <div class="info-message">
+                <p>📱 <strong>Te enviaremos actualizaciones sobre tu pedido</strong></p>
+                <p>Puedes contactarnos al <strong>+123 456 7890</strong> para cualquier consulta</p>
+            </div>
+
+            <!-- Botones de Acción -->
+            <div class="action-buttons">
+                <a href="{% url 'home_cliente' %}" class="btn-primary"> Volver al Inicio</a>
+                <button onclick="window.print()" class="btn-secondary"> Imprimir Comprobante</button>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-bottom">
+            <p>¡Gracias por tu preferencia! 🍔 | Burger LIK &copy; 2025</p>
+        </div>
+    </footer>
+
+    <style>
+        .confirmation-container {
+            max-width: 800px;
+            width: 100%;
+            padding: 40px;
+        }
+
+        .success-icon {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 30px;
+            background: linear-gradient(135deg, #28a745, #20c997);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: scaleIn 0.5s ease;
+        }
+
+        .success-icon svg {
+            width: 70px;
+            height: 70px;
+            color: white;
+            stroke-width: 3;
+        }
+
+        @keyframes scaleIn {
+            from {
+                transform: scale(0);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .success-title {
+            text-align: center;
+            font-size: 36px;
+            color: #28a745;
+            margin-bottom: 10px;
+            animation: fadeIn 0.8s ease;
+        }
+
+        .success-subtitle {
+            text-align: center;
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 40px;
+            animation: fadeIn 1s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .confirmation-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin-bottom: 25px;
+            overflow: hidden;
+            animation: slideUp 0.6s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .card-header {
+            background: #fdd843;
+            padding: 20px;
+            border-bottom: 2px solid #ffc400;
+        }
+
+        .card-header h2 {
+            margin: 0;
+            font-size: 22px;
+            color: #333;
+        }
+
+        .card-body {
+            padding: 25px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .label {
+            font-weight: 600;
+            color: #666;
+            font-size: 16px;
+        }
+
+        .value {
+            color: #333;
+            font-size: 16px;
+        }
+
+        .badge {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .badge-preparacion {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .badge-completado {
+            background: #28a745;
+            color: white;
+        }
+
+        .products-list {
+            margin-bottom: 20px;
+        }
+
+        .product-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: #f8f8f8;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .product-info {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .product-name {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .product-quantity {
+            background: #fdd843;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .product-price {
+            font-weight: bold;
+            color: #ff5722;
+            font-size: 18px;
+        }
+
+        .total-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background: #fbe690;
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+
+        .total-label {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .total-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #ff5722;
+        }
+
+        .info-message {
+            background: #e7f3ff;
+            border-left: 5px solid #17a2b8;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 30px 0;
+        }
+
+        .info-message p {
+            margin: 10px 0;
+            color: #333;
+            font-size: 16px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn-primary,
+        .btn-secondary {
+            flex: 1;
+            padding: 15px 30px;
+            border-radius: 10px;
+            text-decoration: none;
+            text-align: center;
+            font-weight: bold;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: #ff5722;
+            color: white;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background: #ff9f0f;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #333;
+            border: 2px solid #ffc400;
+        }
+
+        .btn-secondary:hover {
+            background: #fbe690;
+            transform: translateY(-2px);
+        }
+
+        @media print {
+            .action-buttons,
+            header,
+            footer {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .confirmation-container {
+                padding: 20px;
+            }
+
+            .success-title {
+                font-size: 28px;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</body>
+</html>

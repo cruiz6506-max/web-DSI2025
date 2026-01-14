@@ -1,0 +1,93 @@
+{% extends 'Vistas/Vista_Admin/base_admin.html' %}
+
+{% block title %}
+{% if mesa %}Editar Mesa{% else %}Nueva Mesa{% endif %}
+{% endblock %}
+
+{% block content %}
+
+<style>
+    .mesa-form {
+        max-width: 420px;
+        margin: 30px auto;
+        padding: 25px;
+        background: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        font-family: Arial, sans-serif;
+    }
+
+    .mesa-form h2 {
+        text-align: center;
+        margin-bottom: 20px;
+        color: #333;
+    }
+
+    .mesa-form label {
+        display: block;
+        margin-bottom: 6px;
+        font-weight: bold;
+        color: #555;
+    }
+
+    .mesa-form input,
+    .mesa-form select {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 18px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+        font-size: 14px;
+        transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    .mesa-form input:focus,
+    .mesa-form select:focus {
+        outline: none;
+        border-color: #ff9f0f;
+        box-shadow: 0 0 6px rgba(74, 144, 226, 0.4);
+    }
+
+    .btn-primary {
+        width: 100%;
+        padding: 12px;
+        background-color: #ff5722;
+        border: none;
+        border-radius: 6px;
+        color: white;
+        font-size: 15px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.3s, transform 0.2s;
+    }
+
+    .btn-primary:hover {
+        background-color: #ffc400;
+        transform: translateY(-2px);
+    }
+</style>
+
+<div class="mesa-form">
+    <h2>{% if mesa %} Editar{% else %}Nueva{% endif %} Mesa</h2>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <label>Número de mesa</label>
+        <input type="number" name="numero" value="{{ mesa.numero|default:'' }}" required>
+
+        <label>Capacidad</label>
+        <input type="number" name="capacidad" value="{{ mesa.capacidad|default:'' }}" required>
+
+        <label>Estado</label>
+        <select name="estado">
+            <option value="disponible" {% if mesa.estado == 'disponible' %}selected{% endif %}>Disponible</option>
+            <option value="ocupada" {% if mesa.estado == 'ocupada' %}selected{% endif %}>Ocupada</option>
+            <option value="reservada" {% if mesa.estado == 'reservada' %}selected{% endif %}>Reservada</option>
+        </select>
+
+        <button type="submit" class="btn-primary">Guardar</button>
+    </form>
+</div>
+
+{% endblock %}

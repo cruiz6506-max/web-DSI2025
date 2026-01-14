@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Login - Pedidos</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="{% static 'css/Login/login.css' %}" />
+  <link rel="icon" href="{% static 'img/logoOficial.png' %}" type="image/x-icon" />
+</head>
+<body>
+  <div class="login-container">
+    <div class="container">
+
+      <div class="login-left">
+         <a href="{% url 'inicio' %}" class="btn-regresar">← Regresar</a>
+        <div class="logo-wrapper">
+
+          <img src="{% static 'img/logo.png' %}" alt="Logo" class="login-vector" />
+        </div>
+      </div>
+
+      <div class="login-right">
+
+          <div class="login-box">
+                <div class="logo-mobile">
+
+                </div>
+
+            <div class="welcome-text">
+             <h2>
+                 Bienvenido/a a nuestro sistema
+             </h2>
+          </div>
+
+         <form  class="login-form" method="POST">
+              {% csrf_token %}
+          <input type="email" name="email" placeholder="Correo electrónico" class="input-email" required />
+          <input type="password" name="contraseña" placeholder="Contraseña" class="input-password" required />
+
+          <div class="form-links">
+            <a class="f" href="{% url 'Clave_Olvidada' %}">¿Olvidaste tu contraseña?</a>
+          </div>
+
+          <button type="submit" class="btn-login">Iniciar sesión</button>
+          </form>
+
+        <a class="register-link" href="{% url 'registro' %}">Regístrate</a>
+
+
+
+      </div>
+
+
+      </div>
+
+
+  </div>
+ </div>
+</body>
+</html>

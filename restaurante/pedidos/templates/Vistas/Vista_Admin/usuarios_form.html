@@ -1,0 +1,154 @@
+{% extends 'Vistas/Vista_Admin/base_admin.html' %}
+
+{% block title %}
+{% if usuario_editar %}Editar Usuario{% else %}Nuevo Usuario{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="content-header">
+    <h2 class="content-title">
+        {% if usuario_editar %}Editar Usuario{% else %}➕ Nuevo Usuario{% endif %}
+    </h2>
+</div>
+
+<div class="form-container">
+    <form method="POST" id="usuarioForm">
+        {% csrf_token %}
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="cedula">Cédula *</label>
+                <input type="text"
+                       class="form-control"
+                       id="cedula"
+                       name="cedula"
+                       value="{{ usuario_editar.cedula|default:'' }}"
+                       maxlength="10"
+                       required
+                       pattern="[0-9]{10}">
+            </div>
+
+            <div class="form-group">
+                <label for="rol">Rol *</label>
+                <select class="form-control" id="rol" name="rol" required>
+                    <option value="">Seleccione</option>
+                    <option value="usuario" {% if usuario_editar and usuario_editar.rol == 'usuario' %}selected{% endif %}>Usuario</option>
+                    <option value="cliente" {% if usuario_editar and usuario_editar.rol == 'cliente' %}selected{% endif %}>Cliente</option>
+                    <option value="administrador" {% if usuario_editar and usuario_editar.rol == 'administrador' %}selected{% endif %}>Administrador</option>
+                    <option value="mesero" {% if usuario_editar and usuario_editar.rol == 'mesero' %}selected{% endif %}>Mesero</option>
+                    <option value="cajero" {% if usuario_editar and usuario_editar.rol == 'cajero' %}selected{% endif %}>Cajero</option>
+                    <option value="repartidor" {% if usuario_editar and usuario_editar.rol == 'repartidor' %}selected{% endif %}>Repartidor</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label>Nombre *</label>
+                <input type="text" class="form-control" name="nombre"
+                       value="{{ usuario_editar.nombre|default:'' }}" required>
+            </div>
+
+            <div class="form-group">
+                <label>Apellido *</label>
+                <input type="text" class="form-control" name="apellido"
+                       value="{{ usuario_editar.apellido|default:'' }}" required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Email *</label>
+            <input type="email" class="form-control" name="email"
+                   value="{{ usuario_editar.email|default:'' }}" required>
+        </div>
+
+        <div class="form-group">
+            <label>
+                Contraseña
+                {% if usuario_editar %}
+                    <small>(opcional)</small>
+                {% else %}
+                    *
+                {% endif %}
+            </label>
+            <input type="password"
+                   class="form-control"
+                   id="contraseña"
+                   name="contraseña"
+                   {% if not usuario_editar %}required{% endif %}
+                   minlength="6">
+        </div>
+
+
+
+      <div class="form-group">
+    <label for="pregunta_clave">Pregunta de Seguridad</label>
+    <select class="form-control" id="pregunta_clave" name="pregunta_clave">
+        <option value="">Seleccione una pregunta</option>
+
+        <option value="mascota"
+            {% if usuario_editar and usuario_editar.pregunta_clave == 'mascota' %}selected{% endif %}>
+            ¿Cuál es el nombre de tu primera mascota?
+        </option>
+
+        <option value="ciudad"
+            {% if usuario_editar and usuario_editar.pregunta_clave == 'ciudad' %}selected{% endif %}>
+            ¿En qué ciudad naciste?
+        </option>
+
+        <option value="comida"
+            {% if usuario_editar and usuario_editar.pregunta_clave == 'comida' %}selected{% endif %}>
+            ¿Cuál es tu comida favorita?
+        </option>
+
+        <option value="maestro"
+            {% if usuario_editar and usuario_editar.pregunta_clave == 'maestro' %}selected{% endif %}>
+            ¿Cuál es el nombre de tu maestro o maestra favorita?
+        </option>
+
+        <option value="trabajo"
+            {% if usuario_editar and usuario_editar.pregunta_clave == 'trabajo' %}selected{% endif %}>
+            ¿Cuál fue tu primer trabajo?
+        </option>
+    </select>
+</div>
+
+  <label for="pregunta_clave">Respuesta de Seguridad</label>
+        <div class="form-group">
+            <input type="text" class="form-control"
+                   name="respuesta_clave"
+                   value="{{ usuario_editar.respuesta_clave|default:'' }}"
+                   placeholder="Respuesta">
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn-primary">
+                {% if usuario_editar %} Actualizar{% else %} Crear{% endif %}
+            </button>
+            <a href="{% url 'usuarios_list' %}" class="btn-secondary">Cancelar</a>
+        </div>
+    </form>
+</div>
+
+<script>
+document.getElementById('usuarioForm').addEventListener('submit', function(e) {
+    const cedula = document.getElementById('cedula').value;
+    const contraseña = document.getElementById('contraseña').value;
+    const esEdicion = {{ usuario_editar|yesno:"true,false" }};
+
+    if (!/^\d{10}$/.test(cedula)) {
+        alert('La cédula debe tener 10 dígitos');
+        e.preventDefault();
+        return;
+    }
+
+    if (!esEdicion && contraseña.length < 6) {
+        alert('Contraseña mínima 6 caracteres');
+        e.preventDefault();
+        return;
+    }
+
+    return confirm(esEdicion ? '¿Actualizar usuario?' : '¿Crear usuario?');
+});
+</script>
+{% endblock %}

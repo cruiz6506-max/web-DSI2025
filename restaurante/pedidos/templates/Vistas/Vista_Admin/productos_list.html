@@ -1,0 +1,133 @@
+{% extends 'Vistas/Vista_Admin/base_admin.html' %}
+{% load static %}
+{% block title %}Productos{% endblock %}
+
+{% block content %}
+<div class="content-header">
+    <h2 class="content-title">Productos</h2>
+    <a href="{% url 'productos_nuevo' %}" class="btn-primary"> Nuevo Producto</a>
+</div>
+
+<!-- Tabs de Categorías -->
+<div class="tabs-container">
+    <button class="tab-btn active" data-category="todos">Todos</button>
+    <button class="tab-btn" data-category="bebidas">Bebidas</button>
+    <button class="tab-btn" data-category="hamburguesas">Hamburguesas</button>
+    <button class="tab-btn" data-category="papas">Papas Fritas</button>
+</div>
+
+<!-- Tarjetas -->
+<div class="cards-container">
+    {% for producto in productos %}
+    <div class="product-card" data-category="{{ producto.categoria.nombre|lower }}">
+
+        {% if producto.imagen %}
+            <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}" class="product-img">
+        {% else %}
+            <img src="{% static 'img/default-product.svg' %}" alt="{{ producto.nombre }}" class="product-img">
+        {% endif %}
+
+        <h3 class="product-name">{{ producto.nombre }}</h3>
+        <p class="product-price">${{ producto.precio }}</p>
+
+        <div class="action-buttons">
+            <a href="{% url 'productos_editar' producto.id %}" class="btn-edit"> Modificar</a>
+            <a href="{% url 'productos_eliminar' producto.id %}" class="btn-delete"> Eliminar</a>
+        </div>
+    </div>
+    {% empty %}
+        <p>No hay productos registrados.</p>
+    {% endfor %}
+</div>
+
+<style>
+.tabs-container {
+    margin-bottom: 20px;
+}
+.tab-btn {
+    background-color: var(--white);
+    border: 2px solid var(--border-color);
+    padding: 10px 20px;
+    border-radius: 8px;
+    margin-right: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+.tab-btn.active {
+    background-color: var(--primary-yellow);
+    color: var(--white);
+    border-color: var(--primary-yellow);
+}
+
+.cards-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 25px;
+}
+.product-card {
+    background-color: var(--white);
+    border-radius: 12px;
+    box-shadow: none;
+    padding: 0;
+    text-align: center;
+    overflow: hidden;
+    height: 360px;
+    display: flex;
+    flex-direction: column;
+}
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px var(--shadow);
+}
+.product-img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 0;
+    margin-bottom: 0;
+}
+.product-name {
+    font-size: 18px;
+    font-weight: 700;
+    margin: 10px 0 5px 0;
+}
+
+.product-price {
+    font-size: 16px;
+    color: var(--accent-orange);
+    margin-bottom: 10px;
+}
+
+.action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+
+</style>
+
+<script>
+const tabs = document.querySelectorAll('.tab-btn');
+const cards = document.querySelectorAll('.product-card');
+
+tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+        tabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+
+        const category = tab.getAttribute('data-category');
+
+        cards.forEach(card => {
+            if (category === 'todos' || card.dataset.category === category) {
+                card.style.display = 'flex';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

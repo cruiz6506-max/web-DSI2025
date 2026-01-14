@@ -1,0 +1,72 @@
+{% extends 'Vistas/Vista_Admin/base_admin.html' %}
+
+{% block title %}Eliminar Pago{% endblock %}
+
+{% block content %}
+<h2> Eliminar Pago</h2>
+<br>
+<p>
+    ¿Seguro que deseas eliminar el pago del pedido #{{ pago.pedido.id }}  
+    por <strong>${{ pago.monto }}</strong>?
+
+</p>
+ <br>
+<form method="POST">
+    {% csrf_token %}
+    <button type="submit" class="btn-danger">Sí, eliminar</button>
+    <a href="{% url 'pedidos_list' %}" class="btn-secondary">Cancelar</a>
+</form>
+<style>
+.content-header {
+    margin-bottom: 20px;
+}
+
+.alert-delete {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    font-size: 1rem;
+}
+
+.delete-form {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.delete-form button, .delete-form a {
+    padding: 8px 15px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 0.95rem;
+}
+
+.btn-danger {
+    padding: 15px 20px;
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btn-danger:hover {
+    background-color: #c82333;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+}
+</style>
+{% endblock %}

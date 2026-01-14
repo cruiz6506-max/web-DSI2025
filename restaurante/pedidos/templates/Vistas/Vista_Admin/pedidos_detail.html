@@ -1,0 +1,283 @@
+{% extends 'Vistas/Vista_Admin/base_admin.html' %}
+
+{% block title %}Detalle Pedido #{{ pedido.id }}{% endblock %}
+
+{% block content %}
+<div class="content-header">
+    <h2 class="content-title">Detalle del Pedido #{{ pedido.id }}</h2>
+    <div style="display: flex; gap: 10px;">
+        <a href="{% url 'pedidos_edit' pedido.id %}" class="btn-secondary"> Editar</a>
+        <a href="{% url 'pedidos_list' %}" class="btn-secondary">← Volver</a>
+    </div>
+</div>
+
+<!-- Información del Pedido -->
+<div class="detail-container">
+    <div class="detail-grid">
+        <!-- Información del Cliente -->
+        <div class="detail-card">
+            <h3 class="card-header"> Información del Cliente</h3>
+            <div class="card-content">
+                <div class="info-row">
+                    <span class="info-label">Nombre:</span>
+                    <span class="info-value">{{ pedido.usuario.nombre }} {{ pedido.usuario.apellido }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Email:</span>
+                    <span class="info-value">{{ pedido.usuario.email }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Cédula:</span>
+                    <span class="info-value">{{ pedido.usuario.cedula }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Información del Pedido -->
+        <div class="detail-card">
+            <h3 class="card-header"> Información del Pedido</h3>
+            <div class="card-content">
+                <div class="info-row">
+                    <span class="info-label">ID Pedido:</span>
+                    <span class="info-value"><strong>#{{ pedido.id }}</strong></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Fecha:</span>
+                    <span class="info-value">{{ pedido.fecha|date:"d/m/Y H:i" }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Tipo:</span>
+                    <span class="badge badge-tipo-{{ pedido.tipo_pedido }}">
+                        {{ pedido.get_tipo_pedido_display }}
+                    </span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Mesa:</span>
+                    <span class="info-value">
+                        {% if pedido.mesa %}
+                            Mesa {{ pedido.mesa.numero }} (Capacidad: {{ pedido.mesa.capacidad }})
+                        {% else %}
+                            -
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Estado del Pedido -->
+    <div class="detail-card" style="margin-top: 20px;">
+        <h3 class="card-header"> Estado del Pedido</h3>
+        <div class="card-content">
+            <form method="POST" action="{% url 'pedidos_cambiar_estado' pedido.id %}" style="display: flex; gap: 15px; align-items: center;">
+                {% csrf_token %}
+                <span class="info-label">Estado Actual:</span>
+                <select name="estado" class="estado-select">
+                    <option value="pendiente" {% if pedido.estado == 'pendiente' %}selected{% endif %}>⏳ Pendiente</option>
+                    <option value="en preparación" {% if pedido.estado == 'en preparación' %}selected{% endif %}>🍳 En Preparación</option>
+                    <option value="entregado" {% if pedido.estado == 'entregado' %}selected{% endif %}>✅ Entregado</option>
+                    <option value="pagado" {% if pedido.estado == 'pagado' %}selected{% endif %}>💰 Pagado</option>
+                </select>
+                <button type="submit" class="btn-primary" style="padding: 10px 20px;">Cambiar Estado</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Productos del Pedido -->
+    <div class="detail-card" style="margin-top: 20px;">
+        <h3 class="card-header"> Productos del Pedido</h3>
+        <div class="table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Precio Unitario</th>
+                        <th>Cantidad</th>
+                        <th>Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for detalle in detalles %}
+                    <tr>
+                        <td>
+                            <strong>{{ detalle.producto.nombre }}</strong>
+                            {% if detalle.producto.descripcion %}
+                                <br><small style="color: #666;">{{ detalle.producto.descripcion|truncatewords:10 }}</small>
+                            {% endif %}
+                        </td>
+                        <td>${{ detalle.producto.precio|floatformat:2 }}</td>
+                        <td><span class="cantidad-badge">{{ detalle.cantidad }}</span></td>
+                        <td><strong>${{ detalle.subtotal|floatformat:2 }}</strong></td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" style="text-align: center; padding: 20px;">No hay productos en este pedido</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr style="background-color: #fdd843;">
+                        <td colspan="3" style="text-align: right; padding: 15px; font-weight: bold; font-size: 18px;">
+                            TOTAL:
+                        </td>
+                        <td style="padding: 15px;">
+                            <strong style="font-size: 20px; color: #ff5722;">${{ total|floatformat:2 }}</strong>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+
+    <!-- Información de Pago si existe -->
+    {% if pago %}
+    <div class="detail-card" style="margin-top: 20px; border: 3px solid #28a745;">
+        <h3 class="card-header" style="background-color: #28a745;">💳 Información de Pago</h3>
+        <div class="card-content">
+            <div class="info-row">
+                <span class="info-label">Método de Pago:</span>
+                <span class="info-value"><strong>{{ pago.metodo|title }}</strong></span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Monto Pagado:</span>
+                <span class="info-value"><strong style="color: #28a745;">${{ pago.monto|floatformat:2 }}</strong></span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Fecha de Pago:</span>
+                <span class="info-value">{{ pago.fecha_pago|date:"d/m/Y H:i" }}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Estado:</span>
+                <span class="badge" style="background-color: #28a745; color: white;">{{ pago.estado|title }}</span>
+            </div>
+            {% if pago.direccion_entrega %}
+            <div class="info-row">
+                <span class="info-label">Dirección de Entrega:</span>
+                <span class="info-value">{{ pago.direccion_entrega }}</span>
+            </div>
+            {% endif %}
+            {% if pago.telefono_contacto %}
+            <div class="info-row">
+                <span class="info-label">Teléfono:</span>
+                <span class="info-value">{{ pago.telefono_contacto }}</span>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% else %}
+    <div class="alert alert-warning" style="margin-top: 20px;">
+         Este pedido aún no tiene un pago registrado
+    <a href="{% url 'registrar_pago' pedido.id %}">Pagar</a>
+
+    </div>
+    {% endif %}
+</div>
+
+<style>
+.detail-container {
+    max-width: 1200px;
+}
+
+.detail-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 20px;
+}
+
+.detail-card {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.card-header {
+    background-color: #fdd843;
+    color: #333;
+    padding: 15px 20px;
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.card-content {
+    padding: 20px;
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.info-row:last-child {
+    border-bottom: none;
+}
+
+.info-label {
+    font-weight: 600;
+    color: #666;
+}
+
+.info-value {
+    color: #333;
+}
+
+.cantidad-badge {
+    background-color: #fdd843;
+    color: #333;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-weight: bold;
+}
+
+.estado-select {
+    padding: 10px 15px;
+    border: 2px solid #ffc400;
+    border-radius: 5px;
+    font-size: 15px;
+    font-family: "Cabin", sans-serif;
+    font-weight: 600;
+}
+
+.estado-select:focus {
+    outline: none;
+    border-color: #ff5722;
+}
+
+/* Badges de tipo */
+.badge-tipo-local {
+    background-color: #28a745;
+    color: white;
+    padding: 5px 12px;
+    border-radius: 15px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.badge-tipo-domicilio {
+    background-color: #17a2b8;
+    color: white;
+    padding: 5px 12px;
+    border-radius: 15px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.badge-tipo-para_llevar {
+    background-color: #ffc107;
+    color: #333;
+    padding: 5px 12px;
+    border-radius: 15px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+@media (max-width: 768px) {
+    .detail-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+{% endblock %}

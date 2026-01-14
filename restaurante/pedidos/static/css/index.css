@@ -1,0 +1,630 @@
+@import url("https://fonts.googleapis.com/css2?family=Cabin:ital,wght@0,400..700;1,400..700&display=swap");
+
+::selection {
+  background: #f7b526; /*Color naranja para el fondo*/
+  color: #fff; /*Color blanco para el texto seleccionado*/
+}
+/*variables*/
+:root {
+  --background-color: #fbe690;
+}
+/*html*/
+html {
+  font-family: "Cabin", sans-serif;
+}
+p {
+  font-family: "Cabin", sans-serif;
+}
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+/*Header */
+.title,
+.title-banner {
+  color: #fff;
+  font-size: 60px;
+  font-weight: 800;
+  font-style: normal;
+  text-align: center;
+  text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease-in-out;
+}
+.header {
+  position: fixed;
+  width: 100%;
+  z-index: 1000;
+  background-color: #fdd843;
+  box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.3);
+  padding: 20px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+ul {
+  list-style: none;
+  display: flex;
+}
+.nav_list a {
+  text-decoration: none;
+  font-size: 30px;
+  color: #fff;
+  text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
+  padding: 20px 20px;
+  transition: all 0.3s ease;
+}
+.nav_list a:hover {
+  color: black;
+}
+/* Banner*/
+
+.banner_content {
+  background-image: linear-gradient(100deg, #000000, #00000010),
+    url(../img/hero-hamburguesa.jpg);
+  height: 60rem;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  text-align: center;
+  padding: 150px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.title-banner:hover {
+  transform: scale(1.15);
+}
+.cta {
+  margin-top: 3rem;
+  display: inline-block;
+  padding: 25px 40px;
+  font-size: 2em;
+  font-weight: bold;
+  color: #fff;
+  background-color: #ff5722;
+  text-decoration: none;
+  border-radius: 5px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  transition: background-color 0.3s, transform 0.3s;
+}
+.cta:hover {
+  background-color: #ff9f0f;
+  transform: scale(1.05);
+}
+.banner-subtitle {
+  margin-top: 20px;
+  color: #fff;
+  font-size: 1.2rem;
+}
+/* opiniones - slider*/
+
+.reviews-slider {
+  text-align: center;
+  padding: 20px;
+
+  background-image: radial-gradient(
+    #ff9f0f 1.9000000000000002px,
+    var(--background-color) 1.9000000000000001px
+  );
+  background-size: 38px 38px;
+  height: 40rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.reviews-slider h2 {
+  font-size: 3em;
+  margin-top: 30px;
+  margin-bottom: 30px;
+  font-weight: bold;
+  color: #333;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+  letter-spacing: 1px;
+
+  transition: all 0.4s ease;
+  position: relative;
+}
+.reviews-slider h2::before,
+.sobre-nosotros::before,
+.pedido-tittle::before,
+.c-title::before,
+.title-best-burgers::before {
+  content: "";
+  position: absolute;
+  bottom: -10px;
+  left: 0;
+  width: 100%;
+  height: 5px;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 69, 0, 0) 0%,
+    rgba(255, 69, 0, 0.8) 50%,
+    rgba(255, 69, 0, 0) 100%
+  );
+  transform: scaleX(0);
+  transform-origin: bottom right;
+  transition: transform 0.4s ease;
+}
+
+.reviews-slider h2:hover,
+.sobre-nosotros:hover,
+.pedido-tittle:hover,
+.c-title:hover,
+.title-best-burgers:hover {
+  color: #000000;
+  text-shadow: 4px 4px 6px rgba(0, 0, 0, 0.4);
+
+  font-size: 3.1em;
+  &::before {
+    transform: scaleX(1);
+    transform-origin: bottom left;
+  }
+}
+
+.slider-container {
+  position: relative;
+  max-width: 1250px;
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+.slides {
+  display: flex;
+
+  transition: transform 0.5s ease-in-out;
+}
+
+.slide {
+  min-width: 100%;
+  box-sizing: border-box;
+  padding: 20px;
+  height: 200px;
+  background-color: #fff;
+  border: 5px solid #ffc400;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+.slide p {
+  font-size: 22px;
+  margin-top: 10px;
+}
+.prev,
+.next {
+  position: absolute;
+  margin-left: 10px;
+  margin-right: 10px;
+  top: 50%;
+  width: 35px;
+  height: 35px;
+  background-color: #ff5e00;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  transform: translateY(-50%);
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.prev {
+  left: 10px;
+}
+
+.next {
+  right: 10px;
+}
+/* Sección hamburguesería */
+.hamburgueseria {
+  background-color: #fff;
+  padding: 40px 20px;
+}
+
+.hamburgueseria .container-inf {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.hamburgueseria h2,
+.pedido-tittle,
+.c-title,
+.title-best-burgers {
+  text-align: center;
+  font-size: 50px;
+  color: #333;
+  margin-bottom: 40px;
+  transition: all 0.4s ease;
+  position: relative;
+}
+
+.hamburgueseria .descripcion {
+  font-size: 1.1em;
+  color: #333;
+  padding: 20px 20px;
+  border: 5px solid var(--background-color);
+  border-style: dashed;
+  border-radius: 20px;
+  line-height: 2;
+  margin-bottom: 30px;
+}
+
+.pedido {
+  line-height: 3;
+  font-size: 1.1em;
+  margin-bottom: 30px;
+}
+
+.pedido-box {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.pedido-box li {
+  margin-bottom: 10px;
+  font-size: 1.1em;
+  text-align: center;
+  background-color: #f7d654;
+  padding: 40px 40px;
+  transform: skew(-20deg);
+  transition: all 0.3s ease-in-out;
+}
+
+.pedido-box li:hover {
+  box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.3);
+}
+
+.pedido-box p {
+  transform: skew(20deg);
+}
+/* Sección caracteristicas */
+
+.C-Destacadas {
+  background-color: var(--background-color);
+  height: 30rem;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  justify-items: center;
+}
+
+.C-Destacadas .caracteristicas {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.feature {
+  margin-left: 20px;
+  margin-right: 20px;
+  flex: 1;
+  min-width: 250px;
+  background: #fff;
+  border: 5px solid #ffc919;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease-in;
+}
+
+.feature:hover,
+.burger-item:hover {
+  transform: scale(1.05);
+}
+
+.C-Destacadas .feature h4 {
+  color: #333;
+  font-size: 1.2em;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.C-Destacadas .feature p {
+  color: #666;
+  font-size: 1em;
+}
+
+/* Sección top products */
+.best-burgers {
+  background-color: #f8f8f8;
+  padding: 3rem 1rem;
+  text-align: center;
+  box-sizing: border-box; /* Incluye padding y border en el cálculo de ancho y alto */
+  overflow: hidden; /* Oculta el contenido que se desborda */
+}
+
+.best-burgers h2 {
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  color: #333;
+}
+
+.burger-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.5rem;
+  margin: 0 auto; /* Centra la lista dentro del contenedor */
+  max-width: 100%; /* Asegura que la lista no se desborde del contenedor */
+  box-sizing: border-box; /* Incluye padding y border en el cálculo de ancho y alto */
+}
+
+.burger-item {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  width: calc(
+    33.333% - 1rem
+  ); /* Ajusta el ancho para tres elementos en fila, teniendo en cuenta el gap */
+  text-align: center;
+  padding: 1rem;
+  box-sizing: border-box; /* Incluye padding y border en el cálculo de ancho y alto */
+  transition: all 0.3s ease-in;
+}
+
+.burger-item img {
+  width: 100%;
+  height: auto;
+  border-bottom: 1px solid #ddd;
+}
+
+.burger-item h3 {
+  font-size: 1.5rem;
+  margin: 1rem 0 0.5rem;
+  color: #333;
+}
+
+.burger-item p {
+  font-size: 1rem;
+  color: #666;
+  margin: 0;
+}
+
+/* Footer */
+footer {
+  background-color: #333;
+  color: #fff;
+  padding: 2rem 1rem;
+  text-align: center;
+}
+
+.footer-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.footer-info,
+.footer-contact,
+.footer-social {
+  flex: 1;
+  margin: 1rem;
+}
+
+.footer-info h3,
+.footer-contact h3,
+.footer-social h3 {
+  margin-bottom: 0.5rem;
+  font-size: 1.25rem;
+}
+
+.footer-info p,
+.footer-contact p {
+  font-size: 0.875rem;
+  margin: 0.5rem 0;
+}
+
+.footer-social a {
+  display: inline-block;
+  margin: 0.5rem;
+  color: #fff;
+  text-decoration: none;
+}
+
+.footer-social img {
+  width: 24px;
+  height: 24px;
+  vertical-align: middle;
+}
+
+.footer-bottom {
+  margin-top: 1rem;
+  border-top: 1px solid #444;
+  padding-top: 1rem;
+}
+
+.footer-bottom p {
+  font-size: 0.875rem;
+}
+
+/*media queries*/
+/* Dispositivos móviles  */
+@media (max-width: 599px) {
+  .nav_container {
+    display: none;
+  }
+  .title-banner {
+    font-size: 30px;
+  }
+
+  .title {
+    font-size: 40px;
+  }
+
+  .banner-subtitle {
+    font-size: 15px;
+  }
+  .banner_content {
+    font-size: 15px;
+    height: 40rem;
+  }
+  .slider-container {
+    width: 400px;
+  }
+  .slider-container p {
+    font-size: 1rem;
+  }
+  .prev,
+  .next {
+    height: 20px;
+    width: 20px;
+    font-size: 10px;
+  }
+  .container-inf {
+    width: 300px;
+  }
+  .pedido-box {
+    width: 300px;
+  }
+  .C-Destacadas {
+    height: 50rem;
+  }
+  .caracteristicas {
+    width: 300px;
+  }
+  .burger-list {
+    width: 300px;
+  }
+  .header {
+    padding: 10px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .nav_list {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .nav_list a {
+    font-size: 24px;
+    padding: 10px 0;
+  }
+
+  .banner_content {
+    padding: 100px 10px;
+    height: auto;
+  }
+
+  .cta {
+    font-size: 1.5em;
+    padding: 15px 30px;
+  }
+
+  .reviews-slider h2 {
+    font-size: 2em;
+  }
+
+  .feature {
+    min-width: 100%;
+    margin: 10px 0;
+  }
+
+  .burger-item {
+    width: 100%;
+    margin: 0;
+  }
+
+  .footer-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .footer-info,
+  .footer-contact,
+  .footer-social {
+    margin: 0.5rem 0;
+  }
+}
+@media (max-width: 412px) {
+  .nav_container {
+    display: none;
+  }
+  .title-banner {
+    font-size: 30px;
+  }
+
+  .title {
+    font-size: 40px;
+  }
+
+  .banner-subtitle {
+    font-size: 15px;
+  }
+  .banner_content {
+    font-size: 15px;
+    height: 40rem;
+  }
+  .slider-container {
+    width: 300px;
+  }
+  .slider-container p {
+    font-size: 0.75rem;
+  }
+  .prev,
+  .next {
+    height: 20px;
+    width: 20px;
+    font-size: 10px;
+  }
+  .container-inf {
+    width: 300px;
+  }
+  .pedido-box {
+    width: 300px;
+  }
+  .C-Destacadas {
+    height: 50rem;
+  }
+  .caracteristicas {
+    width: 300px;
+  }
+  .burger-list {
+    width: 300px;
+  }
+}
+
+/* Tablets y pantallas de escritorio pequeñas */
+@media (min-width: 600px) and (max-width: 1024px) {
+  .title-banner {
+    font-size: 60px;
+  }
+  .banner-subtitle {
+    font-size: 20px;
+  }
+  .banner_content {
+    font-size: 20px;
+  }
+  .slider-container {
+    width: 800px;
+  }
+  .container-inf {
+    width: 800px;
+  }
+  .pedido-box {
+    width: 800px;
+  }
+  .caracteristicas {
+    width: 800px;
+  }
+  .burger-list {
+    width: 900px;
+  }
+}

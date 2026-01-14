@@ -1,0 +1,179 @@
+{% extends 'Vistas/Vista_Admin/base_admin.html' %}
+
+{% block title %}Gestión de Usuarios{% endblock %}
+
+{% block content %}
+<div class="content-header">
+    <h2 class="content-title">Gestión de Usuarios</h2>
+    <a href="{% url 'usuarios_create' %}" class="btn-primary">+ Nuevo Usuario</a>
+</div>
+
+<div class="search-bar">
+    <form method="GET" action="{% url 'usuarios_list' %}" class="search-form">
+        <input
+            type="text"
+            name="buscar"
+            class="search-input"
+            placeholder="Buscar por nombre, apellido, email o cédula..."
+            value="{{ buscar }}"
+        >
+        <button type="submit" class="btn-search">Buscar</button>
+        {% if buscar %}
+            <a href="{% url 'usuarios_list' %}" class="btn-clear">✖ Limpiar</a>
+        {% endif %}
+    </form>
+</div>
+
+<div class="table-container">
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Cédula</th>
+                <th>Nombre Completo</th>
+                <th>Email</th>
+                <th>Rol</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for usr in usuarios %}
+            <tr>
+                <td>{{ usr.id }}</td>
+                <td>{{ usr.cedula }}</td>
+                <td>{{ usr.nombre }} {{ usr.apellido }}</td>
+                <td>{{ usr.email }}</td>
+                <td>
+                    <span class="badge badge-{{ usr.rol }}">
+                        {{ usr.rol|title }}
+                    </span>
+                </td>
+                <td>
+                    <div class="action-buttons">
+                        <a href="{% url 'usuarios_edit' usr.id %}" class="btn-edit"> Editar</a>
+                        <form method="POST" action="{% url 'usuarios_delete' usr.id %}" style="display: inline;" onsubmit="return confirm('¿Está seguro de eliminar al usuario {{ usr.nombre }} {{ usr.apellido }}?');">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-delete"> Eliminar</button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" style="text-align: center; padding: 40px; color: #999;">
+                    {% if buscar %}
+                        No se encontraron usuarios con "{{ buscar }}"
+                    {% else %}
+                        No hay usuarios registrados
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<style>
+/* Badges de roles */
+.badge {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: capitalize;
+    display: inline-block;
+}
+
+.badge-administrador {
+    background-color: #dc3545;
+    color: white;
+}
+
+.badge-usuario {
+    background-color: #17a2b8;
+    color: white;
+}
+
+.badge-cliente {
+    background-color: #28a745;
+    color: white;
+}
+
+.badge-mesero {
+    background-color: #ffc107;
+    color: #333;
+}
+
+.badge-cajero {
+    background-color: #6f42c1;
+    color: white;
+}
+
+.badge-repartidor {
+    background-color: #fd7e14;
+    color: white;
+}
+
+/* Barra de búsqueda */
+.search-bar {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 25px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.search-form {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.search-input {
+    flex: 1;
+    padding: 12px 20px;
+    border: 2px solid #ffc400;
+    border-radius: 5px;
+    font-size: 15px;
+    font-family: "Cabin", sans-serif;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #ff5722;
+    box-shadow: 0 0 0 3px rgba(255, 87, 34, 0.1);
+}
+
+.btn-search {
+    background-color: #ffc107;
+    color: #333;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 5px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-search:hover {
+    background-color: #ffca28;
+    transform: translateY(-2px);
+}
+
+.btn-clear {
+    background-color: #6c757d;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.btn-clear:hover {
+    background-color: #5a6268;
+}
+</style>
+{% endblock %}>

@@ -1,0 +1,260 @@
+{% extends 'Vistas/Vista_Admin/base_admin.html' %}
+
+{% block title %}Gestión de Pedidos{% endblock %}
+
+{% block content %}
+<div class="content-header">
+    <h2 class="content-title">Gestión de Pedidos</h2>
+    <a href="{% url 'pedidos_create' %}" class="btn-primary">+ Nuevo Pedido</a>
+</div>
+
+<!-- Filtros y Búsqueda -->
+<div class="filters-container">
+    <form method="GET" class="filters-form">
+        <div class="filter-group">
+            <label for="estado">Estado:</label>
+            <select name="estado" id="estado" class="filter-select">
+                <option value="">Todos</option>
+                <option value="pendiente" {% if estado_filtro == 'pendiente' %}selected{% endif %}>Pendiente</option>
+                <option value="en preparación" {% if estado_filtro == 'en preparación' %}selected{% endif %}>En Preparación</option>
+                <option value="entregado" {% if estado_filtro == 'entregado' %}selected{% endif %}>Entregado</option>
+                <option value="pagado" {% if estado_filtro == 'pagado' %}selected{% endif %}>Pagado</option>
+            </select>
+        </div>
+        
+        <div class="filter-group">
+            <label for="tipo">Tipo:</label>
+            <select name="tipo" id="tipo" class="filter-select">
+                <option value="">Todos</option>
+                <option value="local" {% if tipo_filtro == 'local' %}selected{% endif %}>En el local</option>
+                <option value="domicilio" {% if tipo_filtro == 'domicilio' %}selected{% endif %}>Domicilio</option>
+                <option value="para_llevar" {% if tipo_filtro == 'para_llevar' %}selected{% endif %}>Para llevar</option>
+            </select>
+        </div>
+        
+        <div class="filter-group" style="flex: 2;">
+            <label for="buscar">Buscar:</label>
+            <input 
+                type="text" 
+                name="buscar" 
+                id="buscar"
+                class="filter-input" 
+                placeholder="Buscar por ID o cliente..." 
+                value="{{ buscar }}"
+            >
+        </div>
+        
+        <button type="submit" class="btn-filter"> Filtrar</button>
+        <a href="{% url 'pedidos_list' %}" class="btn-clear-filter"> Limpiar</a>
+    </form>
+</div>
+
+<!-- Tabla de Pedidos -->
+<div class="table-container">
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Cliente</th>
+                <th>Tipo</th>
+                <th>Mesa</th>
+                <th>Estado</th>
+                <th>Fecha</th>
+                <th>Total</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in pedidos_con_total %}
+            <tr>
+                <td><strong>#{{ item.pedido.id }}</strong></td>
+                <td>{{ item.pedido.usuario.nombre }} {{ item.pedido.usuario.apellido }}</td>
+                <td>
+                    <span class="badge badge-tipo-{{ item.pedido.tipo_pedido }}">
+                        {{ item.pedido.get_tipo_pedido_display }}
+                    </span>
+                </td>
+                <td>
+                    {% if item.pedido.mesa %}
+                        Mesa {{ item.pedido.mesa.numero }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+                <td>
+                    <span class="badge badge-estado-{{ item.pedido.estado|slugify }}">
+                        {{ item.pedido.estado|title }}
+                    </span>
+                </td>
+                <td>{{ item.pedido.fecha|date:"d/m/Y H:i" }}</td>
+                <td><strong>${{ item.total|floatformat:2 }}</strong></td>
+                <td>
+                    <div class="action-buttons">
+                        <a href="{% url 'pedidos_detail' item.pedido.id %}" class="btn-view" title="Ver detalle">Ver detalle</a>
+                        <a href="{% url 'pedidos_edit' item.pedido.id %}" class="btn-edit" title="Editar">Editar pedido</a>
+                        <form method="POST" action="{% url 'pedidos_delete' item.pedido.id %}" style="display: inline;" onsubmit="return confirm('¿Está seguro de eliminar el pedido #{{ item.pedido.id }}?');">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-delete" title="Eliminar">Eliminar pedido</button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="8" style="text-align: center; padding: 40px; color: #999;">
+                    {% if buscar or estado_filtro or tipo_filtro %}
+                        No se encontraron pedidos con los filtros aplicados
+                    {% else %}
+                        No hay pedidos registrados
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<style>
+
+.filters-container {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 25px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.filters-form {
+    display: flex;
+    gap: 15px;
+    align-items: flex-end;
+    flex-wrap: wrap;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 150px;
+}
+
+.filter-group label {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.filter-select,
+.filter-input {
+    padding: 10px;
+    border: 2px solid #ffc400;
+    border-radius: 5px;
+    font-size: 14px;
+    font-family: "Cabin", sans-serif;
+}
+
+.filter-select:focus,
+.filter-input:focus {
+    outline: none;
+    border-color: #ff5722;
+}
+
+.btn-filter {
+    background-color: #ffc107;
+    color: #333;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    height: fit-content;
+}
+
+.btn-filter:hover {
+    background-color: #ffca28;
+}
+
+.btn-clear-filter {
+    background-color: #6c757d;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    height: fit-content;
+}
+
+.btn-clear-filter:hover {
+    background-color: #5a6268;
+}
+
+/* Badges de tipo */
+.badge-tipo-local {
+    background-color: #28a745;
+    color: white;
+}
+
+.badge-tipo-domicilio {
+    background-color: #17a2b8;
+    color: white;
+}
+
+.badge-tipo-para_llevar {
+    background-color: #ffc107;
+    color: #333;
+}
+
+/* Badges de estado */
+.badge-estado-pendiente {
+    background-color: #ffc107;
+    color: #333;
+}
+
+.badge-estado-en-preparacion {
+    background-color: #17a2b8;
+    color: white;
+}
+
+.badge-estado-entregado {
+    background-color: #28a745;
+    color: white;
+}
+
+.badge-estado-pagado {
+    background-color: #6c757d;
+    color: white;
+}
+
+/* Botón ver */
+.btn-view {
+    background-color: #17a2b8;
+    color: white;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.btn-view:hover {
+    background-color: #138496;
+    transform: scale(1.05);
+}
+
+@media (max-width: 768px) {
+    .filters-form {
+        flex-direction: column;
+    }
+    
+    .filter-group {
+        width: 100%;
+    }
+}
+</style>
+{% endblock %}

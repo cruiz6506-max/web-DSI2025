@@ -1,0 +1,104 @@
+{% extends 'Vistas/Vista_Admin/base_admin.html' %}
+{% load static %}
+
+{% block title %}
+{% if producto %}Editar Producto{% else %}Nuevo Producto{% endif %}
+{% endblock %}
+
+{% block content %}
+<h2 style="margin-bottom:20px;">
+    {% if producto %}Editar{% else %}➕ Nuevo{% endif %} Producto
+</h2>
+
+<form method="POST" enctype="multipart/form-data" style="max-width:500px;">
+    {% csrf_token %}
+
+    <label>Nombre</label>
+    <input type="text" name="nombre" value="{{ producto.nombre|default:'' }}" required>
+
+    <label>Categoría</label>
+<select name="categoria" required>
+    <option value="">-- Selecciona una categoría --</option>
+
+    <option value="bebidas"
+        {% if producto and producto.categoria.nombre == "bebidas" %}selected{% endif %}>
+        Bebidas
+    </option>
+
+    <option value="hamburguesas"
+        {% if producto and producto.categoria.nombre == "hamburguesas" %}selected{% endif %}>
+        Hamburguesas
+    </option>
+
+    <option value="papas"
+        {% if producto and producto.categoria.nombre == "papas" %}selected{% endif %}>
+        Papas Fritas
+    </option>
+</select>
+
+
+    <label>Precio</label>
+    <input type="number" step="0.01" name="precio" value="{{ producto.precio|default:'' }}" required>
+
+    <label>Imagen</label>
+    <input type="file" name="imagen">
+
+    {% if producto.imagen %}
+        <div style="margin:10px 0;">
+            <img src="{{ producto.imagen.url }}" width="150">
+        </div>
+    {% endif %}
+
+    <button type="submit" class="btn-primary">Guardar</button>
+</form>
+<style>
+
+
+form {
+    background: var(--white);
+    padding: 25px;
+    border-radius: 12px;
+    max-width: 520px;
+    box-shadow: 0 4px 10px var(--shadow);
+}
+
+form label {
+    display: block;
+    font-weight: 600;
+    margin-top: 15px;
+    margin-bottom: 5px;
+}
+
+form input[type="text"],
+form input[type="number"],
+form input[type="file"] {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+form img {
+    display: block;
+    margin-top: 10px;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+form button {
+    margin-top: 20px;
+    padding: 12px;
+    width: 100%;
+    border-radius: 10px;
+    font-weight: bold;
+}
+form select {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    background-color: var(--white);
+}
+
+</style>
+{% endblock %}

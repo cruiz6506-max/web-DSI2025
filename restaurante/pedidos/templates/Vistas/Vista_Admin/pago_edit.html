@@ -1,0 +1,37 @@
+{% extends 'Vistas/Vista_Admin/base_admin.html' %}
+
+{% block title %}Editar Pago{% endblock %}
+
+{% block content %}
+<h2> Editar Pago - Pedido #{{ pedido.id }}</h2>
+
+<form method="POST" class="form-container-large">
+    {% csrf_token %}
+
+    <div class="form-group">
+        <label>Método de Pago</label>
+        <select name="metodo" class="form-control" required>
+            <option value="efectivo" {% if pago.metodo == 'efectivo' %}selected{% endif %}>Efectivo</option>
+            <option value="tarjeta" {% if pago.metodo == 'tarjeta' %}selected{% endif %}>Tarjeta</option>
+            <option value="transferencia" {% if pago.metodo == 'transferencia' %}selected{% endif %}>Transferencia</option>
+        </select>
+    </div>
+
+    {% if pedido.tipo_pedido == 'domicilio' %}
+    <div class="form-group">
+        <label>Dirección de Entrega</label>
+        <input type="text" name="direccion_entrega" class="form-control"
+               value="{{ pago.direccion_entrega }}">
+    </div>
+    {% endif %}
+
+    <div class="form-group">
+        <label>Teléfono</label>
+        <input type="text" name="telefono_contacto" class="form-control"
+               value="{{ pago.telefono_contacto }}">
+    </div>
+
+    <button type="submit" class="btn-primary">Actualizar Pago</button>
+    <a href="{% url 'pedidos_list' %}" class="btn-secondary">Cancelar</a>
+</form>
+{% endblock %}
